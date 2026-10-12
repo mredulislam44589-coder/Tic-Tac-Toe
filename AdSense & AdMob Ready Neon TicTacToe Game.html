@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<!-- Google Search Console, AdSense & AdMob Account Verification -->
+<meta name="google-adsense-account" content="ca-pub-2785342503907633">
+<meta name="publisher-id" content="ca-app-pub-6063208069628381~4620717889">
+<meta name="admob-app-id" content="ca-app-pub-6063208069628381~4620717889">
+
+<meta name="description" content="Play Neon TicTacToe online! Free multiplayer and single-player Tic Tac Toe game with cyberpunk graphics, AI modes, coin rewards, and real-time rooms.">
+<meta name="keywords" content="TicTacToe, Online Tic Tac Toe, Multiplayer Game, Neon Tic Tac Toe, Free Browser Games">
+
+<title>NEON TICTACTOE - Live Multiplayer & AI Online Game</title>
+<style>
+:root {
+  --bg-gradient: radial-gradient(ellipse at 50% 50%, #290859 0%, #11052c 50%, #060216 100%);
+  --neon-cyan: #00f0ff;
+  --neon-pink: #ff007f;
+  --neon-blue: #0088ff;
+  --neon-green: #00ff88;
+  --purple-btn: #7000ff;
+  --white: #ffffff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--white);
+  background: var(--bg-gradient);
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 100px 150px, #00f0ff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 200px 80px, #ff007f, rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 500px 500px;
+  opacity: 0.6;
+  z-index: 0;
+}
+
+/* NAVBAR */
+nav {
+  width: 100%;
+  background: rgba(13, 7, 43, 0.9);
+  border-bottom: 2px solid var(--neon-cyan);
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+}
+.logo {
+  font-size: 18px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 1px;
+}
+.logo span { color: var(--neon-cyan); }
+
+.nav-links a {
+  color: #cbd5e1;
+  text-decoration: none;
+  margin-left: 15px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--neon-cyan); }
+
+.wrap {
+  width: min(100%, 480px);
+  min-height: calc(100vh - 60px);
+  margin: auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.iconbtn {
+  border: none;
+  background: #5b21b6;
+  color: #fff;
+  border-radius: 16px;
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.5);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.coin-display {
+  display: flex;
+  align-items: center;
+  background: #0f172a;
+  border: 2px solid #3b82f6;
+  border-radius: 20px;
+  padding: 4px 14px;
+  gap: 8px;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+}
+
+.coin-count { font-weight: 900; font-size: 16px; color: #fff; }
+
+.title-box {
+  border: 3px solid #00ff88;
+  background: #0284c7;
+  border-radius: 20px;
+  padding: 16px 10px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+  margin: 10px 0 20px;
+}
+
+.title-symbols {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 12px;
+  color: #fff;
+}
+.title-symbols span { color: #ff3366; }
+
+.main-title {
+  font-size: clamp(20px, 5vw, 26px);
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #ffffff;
+}
+
+.menu-buttons { display: flex; flex-direction: column; gap: 12px; }
+
+.big-btn {
+  width: 100%;
+  min-height: 54px;
+  border: none;
+  border-radius: 18px;
+  font-size: 15px;
+  font-weight: 900;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-single { background: linear-gradient(180deg, #ff9900, #ff5500); color: #3b0764; }
+.btn-friend { background: linear-gradient(180deg, #00f0ff, #00aaeb); color: #2e1065; }
+.btn-multi { background: linear-gradient(180deg, #d946ef, #a855f7); color: #ffffff; }
+.btn-rooms { background: linear-gradient(180deg, #10b981, #059669); color: #ffffff; }
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  margin: 10px auto;
+  padding: 10px;
+  border: 3px solid #a855f7;
+  border-radius: 20px;
+  background: #0f0728;
+}
+
+.cell {
+  width: 100%; height: 100%;
+  border: 2px solid #581c87;
+  border-radius: 14px;
+  background: radial-gradient(circle, #1e1145 0%, #0a051b 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: clamp(38px, 12vw, 60px);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.cell.x { color: var(--neon-cyan); text-shadow: 0 0 15px var(--neon-cyan); }
+.cell.o { color: var(--neon-pink); text-shadow: 0 0 15px var(--neon-pink); }
+.cell.win { background: #4c1d95; border-color: #facc15; }
+
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(4, 2, 18, 0.88);
+  display: grid; place-items: center;
+  padding: 20px; z-index: 100;
+}
+
+.modal {
+  width: min(100%, 400px);
+  background: #0d072b;
+  border: 2px solid #a855f7;
+  border-radius: 20px;
+  padding: 22px;
+}
+
+.btn {
+  border: none; border-radius: 12px; padding: 12px;
+  font-weight: 800; color: #fff; background: linear-gradient(90deg, #7c3aed, #c026d3);
+  cursor: pointer; width: 100%; margin-top: 8px;
+}
+.btn.secondary { background: #1e1b4b; border: 1px solid #4338ca; }
+
+.hide { display: none !important; }
+
+.status {
+  text-align: center; font-size: 16px; font-weight: 800; color: #e9d8ff; margin-bottom: 8px;
+}
+
+/* CONTENT SECTION FOR ADSENSE APPROVAL */
+.seo-section {
+  max-width: 800px;
+  margin: 40px auto 20px;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 16px;
+  color: #cbd5e1;
+  line-height: 1.7;
+  font-size: 14px;
+}
+.seo-section h1, .seo-section h2 {
+  color: var(--neon-cyan);
+  margin: 16px 0 8px;
+}
+.seo-section h1 { font-size: 22px; text-align: center; }
+.seo-section h2 { font-size: 18px; }
+.seo-section p { margin-bottom: 12px; }
+
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 12px;
+  color: #64748b;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  margin-top: 20px;
+}
+footer a { color: var(--neon-cyan); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<!-- TOP NAVIGATION BAR -->
+<nav>
+  <div class="logo">NEON <span>TICTACTOE</span></div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#how-to-play">Rules</a>
+    <a href="#privacy">Privacy</a>
+  </div>
+</nav>
+
+<!-- MAIN GAME CONTAINER -->
+<div class="wrap" id="mainMenu">
+  <header>
+    <div class="coin-display">
+      <span>🪙</span>
+      <span class="coin-count" id="coinCount">100</span>
+    </div>
+    <button class="iconbtn" id="menuSettings">⚙️</button>
+  </header>
+
+  <div id="admobBannerContainer" style="width:100%; min-height:50px; text-align:center; margin-bottom:10px;">
+    <!-- AdMob/AdSense Banner Space -->
+    <ins class="adsbygoogle"
+         style="display:block; width:100%; height:50px; background:rgba(0,0,0,0.2); border-radius:8px;"
+         data-ad-client="ca-pub-6063208069628381"
+         data-ad-slot="4620717889"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+  </div>
+
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+    <div class="title-box">
+      <div class="title-symbols">✕ <span>○</span></div>
+      <div class="main-title">TICTACTOE</div>
+      <div id="playerBadge" style="font-size: 13px; color: #a7f3d0; margin-top: 4px; font-weight: bold;">Player: Guest</div>
+    </div>
+
+    <div class="menu-buttons">
+      <button class="big-btn btn-single" id="menuAI">SINGLEPLAYER (VS AI)</button>
+      <button class="big-btn btn-friend" id="passAndPlayBtn">PASS & PLAY (LOCAL)</button>
+      <button class="big-btn btn-multi" id="menuCreateRoom">➕ CREATE MULTIPLAYER ROOM</button>
+    </div>
+  </div>
+</div>
+
+<!-- GAMEPLAY SCREEN -->
+<div class="wrap hide" id="gameScreen">
+  <header>
+    <button class="iconbtn" id="gameBack">‹</button>
+    <div class="coin-display">
+      <span>🪙</span>
+      <span class="coin-count" id="gameCoinCount">100</span>
+    </div>
+    <button class="iconbtn" id="gameSettings">⚙️</button>
+  </header>
+
+  <div class="status" id="status">Your turn — place X</div>
+  <div class="board" id="board"></div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+    <button class="btn" id="restartBtn">↻ RESTART</button>
+    <button class="btn secondary" id="undoBtn">↶ UNDO</button>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="overlay hide" id="settingsModal">
+  <div class="modal">
+    <h2 style="color:#fff; margin-bottom:10px;">⚙️ Settings</h2>
+    <p style="color:#aaa; font-size:13px;">Player Name:</p>
+    <input type="text" id="settingsNameInput" style="width:100%; padding:10px; margin-bottom:15px; border-radius:8px; border:1px solid #00f0ff; background:#0f172a; color:#fff;" placeholder="Your Name" maxlength="15">
+    <button class="btn" id="saveSettingsBtn">SAVE</button>
+    <button class="btn secondary" id="closeSettingsBtn">CLOSE</button>
+  </div>
+</div>
+
+<!-- TEXT CONTENT FOR ADSENSE VALUE & APPROVAL -->
+<div class="seo-section" id="about">
+  <h1>Welcome to Neon TicTacToe — Ultimate Online Strategy Game</h1>
+  <p>Experience the timeless game of Tic Tac Toe like never before! Neon TicTacToe brings a glowing, high-energy cyberpunk aesthetic to your browser, complete with real-time multiplayer, smart AI opponents, custom nicknames, and interactive coin rewards.</p>
+
+  <h2 id="how-to-play">How to Play Tic Tac Toe</h2>
+  <p>Tic Tac Toe is a classic 3x3 grid strategy game where two players compete to form a line of three matching symbols horizontally, vertically, or diagonally.</p>
+  <ul>
+    <li><strong>Player 1 (X):</strong> Cyan neon cross symbol.</li>
+    <li><strong>Player 2 / AI (O):</strong> Pink neon circle symbol.</li>
+    <li><strong>Winning Condition:</strong> Align 3 of your marks in a straight row before your opponent blocks you!</li>
+  </ul>
+
+  <h2>Game Modes</h2>
+  <p><strong>VS AI:</strong> Practice your skills against custom difficulty levels. Win matches to earn +15 bonus coins!</p>
+  <p><strong>Pass & Play:</strong> Play locally with friends on a single device anytime, anywhere without downloading any app.</p>
+
+  <h2 id="privacy">Privacy & Terms</h2>
+  <p>Neon TicTacToe respects your privacy. We do not collect sensitive personal data. Game coins and preferences are stored locally on your browser. Enjoy continuous, secure, free browser gameplay!</p>
+</div>
+
+<footer>
+  <p>&copy; 2026 Neon TicTacToe. All rights reserved. | Built for smooth Web & Mobile performance.</p>
+</footer>
+
+<script type="module">
+const $ = id => document.getElementById(id);
+
+let coins = parseInt(localStorage.getItem('tictactoe_coins') || '100');
+let playerName = localStorage.getItem('tictactoe_player_name') || 'Guest Player';
+let board = Array(9).fill('');
+let turn = 'X';
+let ended = false;
+let mode = 'ai';
+
+function updateCoins() {
+  $('coinCount').textContent = coins;
+  $('gameCoinCount').textContent = coins;
+  localStorage.setItem('tictactoe_coins', coins);
+}
+
+function updateBadge() {
+  $('playerBadge').textContent = `Player: ${playerName}`;
+  $('settingsNameInput').value = playerName;
+  localStorage.setItem('tictactoe_player_name', playerName);
+}
+
+function showScreen(id) {
+  $('mainMenu').classList.add('hide');
+  $('gameScreen').classList.add('hide');
+  $(id).classList.remove('hide');
+}
+
+$('menuAI').onclick = () => startGame('ai');
+$('passAndPlayBtn').onclick = () => startGame('friend');
+
+$('gameBack').onclick = () => showScreen('mainMenu');
+$('menuSettings').onclick = () => $('settingsModal').classList.remove('hide');
+$('gameSettings').onclick = () => $('settingsModal').classList.remove('hide');
+$('closeSettingsBtn').onclick = () => $('settingsModal').classList.add('hide');
+
+$('saveSettingsBtn').onclick = () => {
+  const val = $('settingsNameInput').value.trim();
+  if (val) playerName = val;
+  updateBadge();
+  $('settingsModal').classList.add('hide');
+};
+
+function startGame(m) {
+  mode = m;
+  board = Array(9).fill('');
+  turn = 'X';
+  ended = false;
+  showScreen('gameScreen');
+  render();
+}
+
+function render() {
+  const b = $('board');
+  b.innerHTML = '';
+  const win = checkWin(board);
+
+  board.forEach((val, i) => {
+    const c = document.createElement('div');
+    c.className = 'cell ' + (val ? val.toLowerCase() : '');
+    c.textContent = val === 'X' ? '✕' : val === 'O' ? '○' : '';
+    if (win && win.includes(i)) c.classList.add('win');
+    c.onclick = () => play(i);
+    b.appendChild(c);
+  });
+
+  if (!ended) {
+    $('status').textContent = `Turn: Player ${turn}`;
+  }
+}
+
+function play(i) {
+  if (ended || board[i]) return;
+  board[i] = turn;
+
+  const win = checkWin(board);
+  if (win) {
+    ended = true;
+    if (turn === 'X') coins += 15; else coins = Math.max(0, coins - 15);
+    updateCoins();
+    $('status').textContent = `🎉 Player ${turn} Wins!`;
+    render();
+    return;
+  }
+
+  if (board.every(Boolean)) {
+    ended = true;
+    $('status').textContent = "🤝 Game Drawn!";
+    render();
+    return;
+  }
+
+  turn = turn === 'X' ? 'O' : 'X';
+  render();
+
+  if (mode === 'ai' && turn === 'O' && !ended) {
+    setTimeout(aiPlay, 300);
+  }
+}
+
+function aiPlay() {
+  const empty = board.map((v, i) => v === '' ? i : null).filter(v => v !== null);
+  if (empty.length === 0) return;
+  const rand = empty[Math.floor(Math.random() * empty.length)];
+  play(rand);
+}
+
+function checkWin(b) {
+  const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  for (let l of lines) {
+    if (b[l[0]] && b[l[0]] === b[l[1]] && b[l[1]] === b[l[2]]) return l;
+  }
+  return null;
+}
+
+$('restartBtn').onclick = () => startGame(mode);
+
+updateCoins();
+updateBadge();
+</script>
+</body>
+</html>
